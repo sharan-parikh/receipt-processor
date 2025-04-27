@@ -2,6 +2,7 @@ package com.fetch.receiptprocessor.service;
 
 import com.fetch.receiptprocessor.dto.ReceiptDTO;
 import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
+import com.fetch.receiptprocessor.exception.ReceiptNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;
 import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,13 +46,21 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
     List<String> itemIds = savedItems.stream()
             .map(ReceiptItem::getId)
             .collect(Collectors.toList());
-    receipt.setReceiptItems(itemIds);
+    receipt.setReceiptItemsIds(itemIds);
     Receipt savedReceipt = receiptRepository.save(receipt);
     return savedReceipt.getId();
   }
 
   @Override
-  public int getPoints(String id) {
-    return 0;
+  public Receipt getReceipt(String id) throws ReceiptNotFoundException {
+    Optional<Receipt> receipt = receiptRepository.findById(id);
+    return receipt.orElseThrow(() -> new ReceiptNotFoundException("A receipt with the given id does not exist"));
+  }
+
+  @Override
+  public Receipt getReceiptWithItems(String id) throws ReceiptNotFoundException {
+    Receipt receipt = getReceipt(id);
+    receipt.setReceiptItems(receipt.getReceiptItemsIds().stream().map(itemId -> receiptItemRepository.findById(itemId).orElseThrow()).collect(Collectors.toList()));
+    return receipt;
   }
 }

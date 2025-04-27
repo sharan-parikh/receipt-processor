@@ -75,7 +75,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("The name of the retailer is invalid", v.getMessage());
+    assertEquals("The name of the retailer is invalid.", v.getMessage());
     assertEquals("retailer", v.getPropertyPath().toString());
   }
 
@@ -93,7 +93,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("The name of the retailer is invalid", v.getMessage());
+    assertEquals("The name of the retailer is invalid.", v.getMessage());
     assertEquals("retailer", v.getPropertyPath().toString());
   }
 
@@ -111,7 +111,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("purchase date is missing or is invalid", v.getMessage());
+    assertEquals("purchase date is missing or is invalid.", v.getMessage());
     assertEquals("purchaseDate", v.getPropertyPath().toString());
   }
 
@@ -129,7 +129,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("purchase time is missing or is invalid", v.getMessage());
+    assertEquals("purchase time is missing or is invalid.", v.getMessage());
     assertEquals("purchaseTime", v.getPropertyPath().toString());
   }
 
@@ -146,7 +146,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("minimum number of items in a receipt should be 1", v.getMessage());
+    assertEquals("minimum number of items in a receipt should be 1.", v.getMessage());
     assertEquals("items", v.getPropertyPath().toString());
   }
 

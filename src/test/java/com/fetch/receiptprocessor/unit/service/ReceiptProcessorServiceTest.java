@@ -8,7 +8,6 @@ import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import com.fetch.receiptprocessor.service.ReceiptProcessorServiceImpl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -16,6 +15,7 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -70,6 +70,10 @@ public class ReceiptProcessorServiceTest {
     when(receiptItemRepository.saveAll(anyList()))
             .thenReturn(fakeSavedItems);
 
+    // Set IDs for the saved items
+    ReflectionTestUtils.setField(fakeSavedItems.get(0), "id", "item1");
+    ReflectionTestUtils.setField(fakeSavedItems.get(1), "id", "item2");
+
     Receipt savedReceipt = new Receipt();
     savedReceipt.setId("ABC-123");
     when(receiptRepository.save(any(Receipt.class)))
@@ -98,7 +102,13 @@ public class ReceiptProcessorServiceTest {
     verify(receiptRepository).save(receiptCaptor.capture());
     Receipt toSaveReceipt = receiptCaptor.getValue();
     assertEquals("MyShop", toSaveReceipt.getRetailer());
-    assertTrue(toSaveReceipt.getReceiptItems().isEmpty());
+
+    // Verify receipt item IDs are stored
+    List<String> expectedItemIds = List.of("item1", "item2");
+    assertEquals(expectedItemIds, toSaveReceipt.getReceiptItemsIds());
+
+    // Verify transient receipt items list is null or empty
+    assertTrue(toSaveReceipt.getReceiptItems() == null || toSaveReceipt.getReceiptItems().isEmpty());
 
     verifyNoMoreInteractions(receiptItemRepository, receiptRepository);
   }
