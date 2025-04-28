@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 public class RetailerPointsRule implements PointsRule {
   @Override
   public int apply(Receipt receipt, boolean llmGenerated) {
-    return receipt.getRetailer() != null ? receipt.getRetailer().length() : 0;
+    if(receipt.getRetailer() != null) {
+      return (int) receipt.getRetailer().chars().filter(Character::isLetterOrDigit).count();
+    }
+    return 0;
   }
 }

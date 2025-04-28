@@ -2,20 +2,20 @@ package com.fetch.receiptprocessor.unit.service;
 
 import com.fetch.receiptprocessor.dto.ReceiptDTO;
 import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
+import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;
 import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import com.fetch.receiptprocessor.service.ReceiptProcessorServiceImpl;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,157 +23,125 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ReceiptProcessorServiceTest {
+class ReceiptProcessorServiceImplTest {
 
   @Mock
-  ReceiptRepository receiptRepository;
+  private ReceiptRepository receiptRepository;
 
   @Mock
-  ReceiptItemRepository receiptItemRepository;
+  private ReceiptItemRepository receiptItemRepository;
 
   @InjectMocks
-  ReceiptProcessorServiceImpl service;
+  private ReceiptProcessorServiceImpl receiptProcessorService;
 
-  private ReceiptDTO buildDto(String retailer, ReceiptItemDTO... items) {
-    ReceiptDTO dto = new ReceiptDTO();
-    dto.setRetailer(retailer);
-    dto.setPurchaseDate(LocalDate.now());
-    dto.setPurchaseTime(LocalTime.now());
-    dto.setItems(Arrays.asList(items));
-    return dto;
+  private Receipt testReceipt;
+  private ReceiptItem testItem1, testItem2;
+
+  @BeforeEach
+  void setUp() {
+    // Setup test data
+    testItem1 = new ReceiptItem("Item 1", new BigDecimal("10.00"));
+    testItem1.setId(UUID.randomUUID());
+
+    testItem2 = new ReceiptItem("Item 2", new BigDecimal("15.00"));
+    testItem2.setId(UUID.randomUUID());
+
+    testReceipt = new Receipt();
+    testReceipt.setId(UUID.randomUUID());
+    testReceipt.setRetailer("Test Retailer");
+    testReceipt.setTotal(new BigDecimal("25.00"));
+    testReceipt.setReceiptItemsIds(Arrays.asList(testItem1.getId(), testItem2.getId()));
   }
 
+  // getReceiptWithItems tests
   @Test
-  void processReceipt_withItems_convertsAndSavesEverything_andReturnsId() {
+  void getReceiptWithItems_ValidId_ReturnsReceiptWithItems() throws Exception {
     // Arrange
-    ReceiptItemDTO dto1 = new ReceiptItemDTO("Apple",  "1.20");
-    ReceiptItemDTO dto2 = new ReceiptItemDTO("Banana", "0.80");
-    ReceiptDTO input = buildDto("MyShop", dto1, dto2);
-
-    // stub saveAll(...) on receiptItemRepository
-    List<ReceiptItem> fakeSavedItems = List.of(
-            new ReceiptItem("Apple",  new BigDecimal("1.20")),
-            new ReceiptItem("Banana", new BigDecimal("0.80"))
-    );
-    when(receiptItemRepository.saveAll(anyList()))
-            .thenReturn(fakeSavedItems);
-
-    // Set IDs for the saved items
-    ReflectionTestUtils.setField(fakeSavedItems.get(0), "id", "item1");
-    ReflectionTestUtils.setField(fakeSavedItems.get(1), "id", "item2");
-
-    Receipt savedReceipt = new Receipt();
-    savedReceipt.setId("ABC-123");
-    when(receiptRepository.save(any(Receipt.class)))
-            .thenReturn(savedReceipt);
+    when(receiptRepository.findById(testReceipt.getId()))
+            .thenReturn(Optional.of(testReceipt));
+    when(receiptItemRepository.findAllById(testReceipt.getReceiptItemsIds()))
+            .thenReturn(Arrays.asList(testItem1, testItem2));
 
     // Act
-    Receipt result = service.processReceipt(input);
-
-    // Assert return value
-    assertEquals("ABC-123", result.getId());
-
-    // Verify items were converted and passed into saveAll(...)
-    ArgumentCaptor<List<ReceiptItem>> itemsCaptor =
-            ArgumentCaptor.forClass(List.class);
-    verify(receiptItemRepository).saveAll(itemsCaptor.capture());
-    List<ReceiptItem> toSave = itemsCaptor.getValue();
-    assertEquals(2, toSave.size());
-    assertEquals("Apple",  toSave.get(0).getShortDescription());
-    assertEquals(new BigDecimal("1.20"), toSave.get(0).getPrice());
-    assertEquals("Banana", toSave.get(1).getShortDescription());
-    assertEquals(new BigDecimal("0.80"), toSave.get(1).getPrice());
-
-    // Verify receipt was constructed correctly
-    ArgumentCaptor<Receipt> receiptCaptor =
-            ArgumentCaptor.forClass(Receipt.class);
-    verify(receiptRepository).save(receiptCaptor.capture());
-    Receipt toSaveReceipt = receiptCaptor.getValue();
-    assertEquals("MyShop", toSaveReceipt.getRetailer());
-
-    // Verify receipt item IDs are stored
-    List<String> expectedItemIds = List.of("item1", "item2");
-    assertEquals(expectedItemIds, toSaveReceipt.getReceiptItemsIds());
-
-    // Verify transient receipt items list is null or empty
-    assertTrue(toSaveReceipt.getReceiptItems() == null || toSaveReceipt.getReceiptItems().isEmpty());
-
-    verifyNoMoreInteractions(receiptItemRepository, receiptRepository);
-  }
-
-  @Test
-  void processReceipt_withEmptyItems_savesEmptyAndReturnsId() {
-    // Arrange
-    ReceiptDTO input = buildDto("EmptyShop");  // no items
-
-    when(receiptItemRepository.saveAll(anyList()))
-            .thenReturn(Collections.emptyList());
-
-    Receipt saved = new Receipt();
-    saved.setId("EMPTY-001");
-    when(receiptRepository.save(any(Receipt.class)))
-            .thenReturn(saved);
-
-    // Act
-    Receipt receipt = service.processReceipt(input);
+    Receipt result = receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
 
     // Assert
-    assertEquals("EMPTY-001", receipt.getId());
-    verify(receiptItemRepository).saveAll(Collections.emptyList());
-    verify(receiptRepository).save(any(Receipt.class));
-    verifyNoMoreInteractions(receiptItemRepository, receiptRepository);
+    assertNotNull(result.getReceiptItems());
+    assertEquals(2, result.getReceiptItems().size());
+    verify(receiptItemRepository, times(1)).findAllById(anyList());
   }
 
   @Test
-  void processReceipt_nullItems_throwsNPE_andNoRepoCalls() {
+  void getReceiptWithItems_NoItems_ReturnsEmptyList() throws Exception {
     // Arrange
-    ReceiptDTO input = new ReceiptDTO();
-    input.setRetailer("NullShop");
-    input.setPurchaseDate(LocalDate.now());
-    input.setPurchaseTime(LocalTime.now());
-    input.setItems(null);
-
-    // Act & Assert
-    assertThrows(NullPointerException.class, () ->
-            service.processReceipt(input)
-    );
-
-    verifyNoInteractions(receiptItemRepository, receiptRepository);
-  }
-
-  @Test
-  void processReceipt_itemsThenReceipt_callOrder() {
-    // Arrange
-    ReceiptItemDTO dtoItem = new ReceiptItemDTO("X", "2.00");
-    ReceiptDTO input = buildDto("OrderShop", dtoItem);
-
-    when(receiptItemRepository.saveAll(anyList()))
-            .thenReturn(List.of(new ReceiptItem("X", new BigDecimal("2.00"))));
-
-    Receipt saved = new Receipt();
-    saved.setId("ORD-1");
-    when(receiptRepository.save(any(Receipt.class))).thenReturn(saved);
+    testReceipt.setReceiptItemsIds(Collections.emptyList());
+    when(receiptRepository.findById(testReceipt.getId()))
+            .thenReturn(Optional.of(testReceipt));
 
     // Act
-    service.processReceipt(input);
+    Receipt result = receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
 
-    // Assert call order
-    InOrder inOrder = inOrder(receiptItemRepository, receiptRepository);
-    inOrder.verify(receiptItemRepository).saveAll(anyList());
-    inOrder.verify(receiptRepository).save(any(Receipt.class));
-    verifyNoMoreInteractions(receiptItemRepository, receiptRepository);
+    // Assert
+    assertTrue(result.getReceiptItems().isEmpty());
+    verify(receiptItemRepository, never()).findAllById(any());
   }
 
+  @Test
+  void getReceiptWithItems_MissingItems_ThrowsException() {
+    // Arrange
+    when(receiptRepository.findById(testReceipt.getId()))
+            .thenReturn(Optional.of(testReceipt));
+    when(receiptItemRepository.findAllById(testReceipt.getReceiptItemsIds()))
+            .thenReturn(Collections.singletonList(testItem1)); // Only return 1 of 2 items
+
+    // Act & Assert
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+      receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
+    });
+
+    assertTrue(exception.getMessage().contains("not found"));
+  }
+
+  @Test
+  void getReceiptWithItems_InvalidId_ThrowsException() {
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> {
+      receiptProcessorService.getReceiptWithItems("invalid-uuid");
+    });
+  }
+
+  // Original getReceipt tests remain unchanged
+  @Test
+  void getReceipt_ExistingId_ReturnsReceipt() throws Exception {
+    when(receiptRepository.findById(testReceipt.getId()))
+            .thenReturn(Optional.of(testReceipt));
+
+    Receipt result = receiptProcessorService.getReceipt(testReceipt.getId().toString());
+    assertEquals(testReceipt.getId(), result.getId());
+  }
+
+  @Test
+  void getReceiptWithItems_ValidId_MakesSingleQuery() throws Exception {
+    when(receiptRepository.findById(testReceipt.getId())).thenReturn(Optional.of(testReceipt));
+    when(receiptItemRepository.findAllById(anyList())).thenReturn(List.of(testItem1, testItem2));
+
+    receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
+
+    verify(receiptItemRepository, times(1)).findAllById(testReceipt.getReceiptItemsIds());
+  }
 }

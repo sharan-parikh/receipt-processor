@@ -3,8 +3,10 @@ package com.fetch.receiptprocessor.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ReceiptItemDTO {
 
   @Pattern(regexp = "^[\\w\\s\\-]+$", message = "short description of an item is invalid")

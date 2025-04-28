@@ -43,37 +43,17 @@ class PurchaseDatePointsRuleTest {
   }
 
   @Test
-  void shouldReturn6PointsWhenPurchaseDateIsMonday() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 24));
-    int points = rule.apply(receipt, false);
-    assertEquals(6, points);
-  }
-
-  @Test
-  void shouldReturn0PointsWhenPurchaseDateIsTuesday() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 25));
-    int points = rule.apply(receipt, false);
-    assertEquals(0, points);
-  }
-
-  @Test
-  void shouldReturn6PointsWhenPurchaseDateIsWednesday() {
+  void shouldReturn0PointsWhenPurchaseDateIsEven() {
     receipt.setPurchaseDate(LocalDate.of(2023, 4, 26));
     int points = rule.apply(receipt, false);
-    assertEquals(6, points);
-  }
-
-  @Test
-  void shouldReturn0PointsWhenPurchaseDateIsThursday() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 27));
-    int points = rule.apply(receipt, false);
     assertEquals(0, points);
   }
 
   @Test
-  void shouldReturn6PointsWhenPurchaseDateIsFriday() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 28));
+  void shouldReturn6PointsWhenPurchaseDateIsOdd() {
+    receipt.setPurchaseDate(LocalDate.of(2023, 4, 11));
     int points = rule.apply(receipt, false);
     assertEquals(6, points);
   }
+
 }

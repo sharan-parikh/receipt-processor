@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import constants.ExceptionMessages;
@@ -48,7 +49,7 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
       itemsToAdd.add(new ReceiptItem(item.getShortDescription(), new BigDecimal(item.getPrice())));
     }
     List<ReceiptItem> savedItems = receiptItemRepository.saveAll(itemsToAdd);
-    List<String> itemIds = savedItems.stream()
+    List<UUID> itemIds = savedItems.stream()
             .map(ReceiptItem::getId)
             .collect(Collectors.toList());
     receipt.setReceiptItemsIds(itemIds);
@@ -58,14 +59,21 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
 
   @Override
   public Receipt getReceipt(String id) throws ResourceNotFoundException {
-    Optional<Receipt> receipt = receiptRepository.findById(id);
+    Optional<Receipt> receipt = receiptRepository.findById(UUID.fromString(id));
     return receipt.orElseThrow(() -> new ResourceNotFoundException(ExceptionMessages.RECEIPT_NOT_FOUND));
   }
 
   @Override
   public Receipt getReceiptWithItems(String id) throws ResourceNotFoundException {
     Receipt receipt = getReceipt(id);
-    receipt.setReceiptItems(receipt.getReceiptItemsIds().stream().map(itemId -> receiptItemRepository.findById(itemId).orElseThrow()).collect(Collectors.toList()));
+    List<ReceiptItem> items = receiptItemRepository.findAllById(receipt.getReceiptItemsIds());
+
+    if (items.size() != receipt.getReceiptItemsIds().size()) {
+      throw new ResourceNotFoundException(
+              items.isEmpty() ? "No items found" : "Some items not found"
+      );
+    }
+    receipt.setReceiptItems(items);
     return receipt;
   }
 }

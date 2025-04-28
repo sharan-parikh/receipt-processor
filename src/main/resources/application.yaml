@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: receipt-processor
+  data:
+    mongodb:
+      uuid-representation: standard

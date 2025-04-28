@@ -29,7 +29,7 @@ class RetailerPointsRuleTest {
   }
 
   @Test
-  void shouldReturnPointsEqualToRetailerNameLength() {
+  void shouldReturnPointsEqualToNumberOfAlphaNumericChars() {
     receipt.setRetailer("Target");
     int points = rule.apply(receipt, false);
     assertEquals(6, points);
@@ -43,17 +43,17 @@ class RetailerPointsRuleTest {
   }
 
   @Test
-  void shouldCountSpacesInRetailerName() {
+  void shouldNotCountSpacesInRetailerName() {
     receipt.setRetailer("Walmart Supercenter");
     int points = rule.apply(receipt, false);
-    assertEquals(19, points);
+    assertEquals(18, points);
   }
 
   @Test
   void shouldHandleSpecialCharactersInRetailerName() {
     receipt.setRetailer("Ben & Jerry's");
     int points = rule.apply(receipt, false);
-    assertEquals(13, points);
+    assertEquals(9, points);
   }
 
   @Test

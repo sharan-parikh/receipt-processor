@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class Receipt {
 
   @Id
-  private String id;
+  private UUID id;
 
   private String retailer;
 
@@ -25,7 +27,7 @@ public class Receipt {
 
   private LocalTime purchaseTime;
 
-  private List<String> receiptItemsIds;
+  private List<UUID> receiptItemsIds;
 
   @Transient
   private List<ReceiptItem> receiptItems;

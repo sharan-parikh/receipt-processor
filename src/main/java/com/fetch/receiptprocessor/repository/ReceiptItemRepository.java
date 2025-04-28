@@ -5,5 +5,7 @@ import com.fetch.receiptprocessor.model.ReceiptItem;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ReceiptItemRepository extends MongoRepository<ReceiptItem, String> {
+import java.util.UUID;
+
+public interface ReceiptItemRepository extends MongoRepository<ReceiptItem, UUID> {
 }

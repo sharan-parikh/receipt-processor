@@ -38,12 +38,12 @@ public class ReceiptProcessorController {
   public ResponseEntity<ReceiptCreatedResponse> processReceipt(@RequestBody @Valid ReceiptDTO receiptDTO) {
      Receipt savedReceipt = receiptProcessorService.processReceipt(receiptDTO);
      ReceiptCreatedResponse response = new ReceiptCreatedResponse();
-     response.setId(savedReceipt.getId());
+     response.setId(savedReceipt.getId().toString());
      return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @GetMapping("/{id}/points")
-  public ResponseEntity<PointsAwardedResponse> processReceipt(
+  public ResponseEntity<PointsAwardedResponse> getPoints(
           @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId) throws ResourceNotFoundException {
     Receipt receipt = receiptProcessorService.getReceiptWithItems(receiptId);
     PointsAwardedResponse response = new PointsAwardedResponse();

@@ -6,4 +6,5 @@ public class ExceptionMessages {
 
   public static final String RECEIPT_NOT_FOUND = "No receipt found for that ID.";
 
+  public static final String RECEIPT_ITEM_NOT_FOUND = "No receipt item found for that ID.";
 }
