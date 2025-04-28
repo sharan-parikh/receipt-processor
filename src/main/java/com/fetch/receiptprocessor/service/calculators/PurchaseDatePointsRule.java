@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public class PurchaseDatePointsRule implements PointsRule {
   @Override
   public int apply(Receipt receipt, boolean llmGenerated) {
-    return (receipt.getPurchaseDate().getDayOfWeek().getValue() % 2 != 0) ? 6 : 0;
+    return (receipt.getPurchaseDate().getDayOfMonth() % 2 != 0) ? 6 : 0;
   }
 }

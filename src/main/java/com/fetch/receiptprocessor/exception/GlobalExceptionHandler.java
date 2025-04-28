@@ -19,4 +19,18 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage()));
     return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<Map<String, String>> handleReceiptNotFoundException(ResourceNotFoundException ex) {
+    Map<String, String> errors = new HashMap<>();
+    errors.put("message", ex.getMessage());
+    return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<Map<String, String>> handleGeneralExceptions(Exception ex) {
+    Map<String, String> errors = new HashMap<>();
+    errors.put("message", "An error occurred");
+    return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }

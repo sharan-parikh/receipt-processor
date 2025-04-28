@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public class PointsServiceImpl implements PointsService {
 
-  private List<PointsRule> rules;
+  private final List<PointsRule> rules;
   public PointsServiceImpl(List<PointsRule> rules) {
     this.rules = rules;
   }

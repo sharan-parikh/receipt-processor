@@ -13,7 +13,7 @@ public class ItemDescriptionPointsRule implements PointsRule {
             .filter(item -> item.getShortDescription().trim().length() % 3 == 0)
             .map(item -> item.getPrice()
                     .multiply(new BigDecimal("0.2")))
-            .map(points -> points.setScale(0, RoundingMode.HALF_UP))
+            .map(points -> points.setScale(0, RoundingMode.CEILING))
             .map(BigDecimal::intValueExact)
             .reduce(0, Integer::sum);
   }

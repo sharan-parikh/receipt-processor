@@ -80,10 +80,10 @@ public class ReceiptProcessorServiceTest {
             .thenReturn(savedReceipt);
 
     // Act
-    String resultId = service.processReceipt(input);
+    Receipt result = service.processReceipt(input);
 
     // Assert return value
-    assertEquals("ABC-123", resultId);
+    assertEquals("ABC-123", result.getId());
 
     // Verify items were converted and passed into saveAll(...)
     ArgumentCaptor<List<ReceiptItem>> itemsCaptor =
@@ -127,10 +127,10 @@ public class ReceiptProcessorServiceTest {
             .thenReturn(saved);
 
     // Act
-    String id = service.processReceipt(input);
+    Receipt receipt = service.processReceipt(input);
 
     // Assert
-    assertEquals("EMPTY-001", id);
+    assertEquals("EMPTY-001", receipt.getId());
     verify(receiptItemRepository).saveAll(Collections.emptyList());
     verify(receiptRepository).save(any(Receipt.class));
     verifyNoMoreInteractions(receiptItemRepository, receiptRepository);
