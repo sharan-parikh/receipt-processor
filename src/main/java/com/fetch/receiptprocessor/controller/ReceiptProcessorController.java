@@ -10,6 +10,7 @@ import com.fetch.receiptprocessor.service.ReceiptProcessorService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @RestController
 @RequestMapping("/receipts")
+@Validated
 public class ReceiptProcessorController {
   private final ReceiptProcessorService receiptProcessorService;
   private final PointsService pointsService;
@@ -41,8 +43,9 @@ public class ReceiptProcessorController {
   }
 
   @GetMapping("/{id}/points")
-  public ResponseEntity<PointsAwardedResponse> processReceipt(@PathVariable(name = "id") @NotBlank String receiptId) throws ResourceNotFoundException {
-    Receipt receipt = receiptProcessorService.getReceipt(receiptId);
+  public ResponseEntity<PointsAwardedResponse> processReceipt(
+          @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId) throws ResourceNotFoundException {
+    Receipt receipt = receiptProcessorService.getReceiptWithItems(receiptId);
     PointsAwardedResponse response = new PointsAwardedResponse();
     response.setPoints(pointsService.calculatePoints(receipt, false));
     return ResponseEntity.status(HttpStatus.OK).body(response);

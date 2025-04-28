@@ -39,6 +39,9 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
   public Receipt processReceipt(ReceiptDTO receiptRequest) {
     Receipt receipt = new Receipt();
     receipt.setRetailer(receiptRequest.getRetailer());
+    receipt.setPurchaseDate(receiptRequest.getPurchaseDate());
+    receipt.setPurchaseTime(receiptRequest.getPurchaseTime());
+    receipt.setTotal(new BigDecimal(receiptRequest.getTotal()));
 
     List<ReceiptItem> itemsToAdd = new ArrayList<>();
     for(ReceiptItemDTO item : receiptRequest.getItems()) {
