@@ -66,6 +66,7 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
   @Override
   public Receipt getReceiptWithItems(String id) throws ResourceNotFoundException {
     Receipt receipt = getReceipt(id);
+
     List<ReceiptItem> items = receiptItemRepository.findAllById(receipt.getReceiptItemsIds());
 
     if (items.size() != receipt.getReceiptItemsIds().size()) {

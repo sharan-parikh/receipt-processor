@@ -16,6 +16,7 @@ import lombok.Data;
 @Data
 public class ReceiptDTO {
 
+  @NotNull(message = "retailer is missing")
   @Pattern(regexp = "^[\\w\\s\\-&]+$", message = "The name of the retailer is invalid.")
   private String retailer;
 

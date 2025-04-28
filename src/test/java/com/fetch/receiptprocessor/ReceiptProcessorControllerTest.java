@@ -1,47 +1,37 @@
-package com.fetch.receiptprocessor.controller;
+package com.fetch.receiptprocessor;
 
+import com.fetch.receiptprocessor.controller.ReceiptProcessorController;
 import com.fetch.receiptprocessor.dto.ReceiptDTO;
 import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
-import com.fetch.receiptprocessor.exception.GlobalExceptionHandler;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
+import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
+import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import com.fetch.receiptprocessor.service.PointsService;
 import com.fetch.receiptprocessor.service.ReceiptProcessorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReceiptProcessorController.class)
+@WebMvcTest(controllers = ReceiptProcessorController.class)
 public class ReceiptProcessorControllerTest {
 
   @Autowired
@@ -50,11 +40,18 @@ public class ReceiptProcessorControllerTest {
   @Autowired
   private ObjectMapper objectMapper;
 
-  @MockitoBean
+  @MockBean
   private ReceiptProcessorService receiptProcessorService;
 
-  @MockitoBean
+
+  @MockBean
   private PointsService pointsService;
+
+  @MockBean
+  private ReceiptRepository receiptRepository;
+
+  @MockBean
+  private ReceiptItemRepository receiptItemRepository;
 
   private ReceiptDTO createValidReceiptDTO() {
     ReceiptDTO receiptDTO = new ReceiptDTO();

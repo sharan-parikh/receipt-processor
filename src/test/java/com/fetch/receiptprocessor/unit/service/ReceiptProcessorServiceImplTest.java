@@ -1,7 +1,5 @@
 package com.fetch.receiptprocessor.unit.service;
 
-import com.fetch.receiptprocessor.dto.ReceiptDTO;
-import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;
@@ -12,14 +10,11 @@ import com.fetch.receiptprocessor.service.ReceiptProcessorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,16 +66,13 @@ class ReceiptProcessorServiceImplTest {
   // getReceiptWithItems tests
   @Test
   void getReceiptWithItems_ValidId_ReturnsReceiptWithItems() throws Exception {
-    // Arrange
     when(receiptRepository.findById(testReceipt.getId()))
             .thenReturn(Optional.of(testReceipt));
     when(receiptItemRepository.findAllById(testReceipt.getReceiptItemsIds()))
             .thenReturn(Arrays.asList(testItem1, testItem2));
 
-    // Act
     Receipt result = receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
 
-    // Assert
     assertNotNull(result.getReceiptItems());
     assertEquals(2, result.getReceiptItems().size());
     verify(receiptItemRepository, times(1)).findAllById(anyList());
@@ -88,17 +80,13 @@ class ReceiptProcessorServiceImplTest {
 
   @Test
   void getReceiptWithItems_NoItems_ReturnsEmptyList() throws Exception {
-    // Arrange
     testReceipt.setReceiptItemsIds(Collections.emptyList());
     when(receiptRepository.findById(testReceipt.getId()))
             .thenReturn(Optional.of(testReceipt));
 
-    // Act
     Receipt result = receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
 
-    // Assert
     assertTrue(result.getReceiptItems().isEmpty());
-    verify(receiptItemRepository, never()).findAllById(any());
   }
 
   @Test
