@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +53,11 @@ class GlobalExceptionHandlerTest {
     when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
     when(bindingResult.getFieldErrors()).thenReturn(fieldErrors);
 
-    ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleValidationExceptions(methodArgumentNotValidException);
+    ResponseEntity<Map<String, Object>> response = globalExceptionHandler.handleValidationExceptions(methodArgumentNotValidException);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals(1, response.getBody().size());
-    assertEquals("error message", response.getBody().get("fieldName"));
+    assertEquals(2, response.getBody().size());
+    assertEquals("error message", ((ArrayList<String>)response.getBody().get("errors")).get(0));
   }
 
   @Test
@@ -68,12 +69,12 @@ class GlobalExceptionHandlerTest {
     when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
     when(bindingResult.getFieldErrors()).thenReturn(fieldErrors);
 
-    ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleValidationExceptions(methodArgumentNotValidException);
+    ResponseEntity<Map<String, Object>> response = globalExceptionHandler.handleValidationExceptions(methodArgumentNotValidException);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals(2, response.getBody().size());
-    assertEquals("error message 1", response.getBody().get("field1"));
-    assertEquals("error message 2", response.getBody().get("field2"));
+    assertEquals("error message 1", ((ArrayList<String>)response.getBody().get("errors")).get(0));
+    assertEquals("error message 2", ((ArrayList<String>)response.getBody().get("errors")).get(1));
   }
 
   @Test
@@ -105,10 +106,10 @@ class GlobalExceptionHandlerTest {
     when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
     when(bindingResult.getFieldErrors()).thenReturn(fieldErrors);
 
-    ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleValidationExceptions(methodArgumentNotValidException);
+    ResponseEntity<Map<String, Object>> response = globalExceptionHandler.handleValidationExceptions(methodArgumentNotValidException);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertTrue(response.getBody().isEmpty());
+    assertTrue(((ArrayList<String>)response.getBody().get("errors")).isEmpty());
   }
 
   @Test
@@ -120,7 +121,7 @@ class GlobalExceptionHandlerTest {
 
     ConstraintViolationException ex = new ConstraintViolationException(Set.of(v1));
 
-    ResponseEntity<?> response = globalExceptionHandler.onConstraintViolation(ex);
+    ResponseEntity<?> response = globalExceptionHandler.handleConstraintViolation(ex);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals(1, ((Map<String, List<String>>)response.getBody()).size());

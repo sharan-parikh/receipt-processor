@@ -1,14 +1,23 @@
 package com.fetch.receiptprocessor.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -16,15 +25,25 @@ import jakarta.validation.ConstraintViolationException;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-    Map<String, String> errors = new HashMap<>();
+  public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    Map<String, Object> errors = new HashMap<>();
+    List<String> errorMessages = new ArrayList<>();
     ex.getBindingResult().getFieldErrors().forEach(error ->
-            errors.put(error.getField(), error.getDefaultMessage()));
+            errorMessages.add(error.getDefaultMessage()));
+    errors.put("message", "The receipt is invalid.");
+    errors.put("errors", errorMessages);
     return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<Map<String, String>> handleInvalidFormatExceptions(HttpMessageNotReadableException ex) {
+    Map<String, String> errorResponse = new HashMap<>();
+    errorResponse.put("message", "unable to deserialize the payload.");
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<?> onConstraintViolation(ConstraintViolationException ex) {
+  public ResponseEntity<?> handleConstraintViolation(ConstraintViolationException ex) {
     List<String> errors = ex.getConstraintViolations().stream()
             .map(v -> v.getPropertyPath() + ": " + v.getMessage())
             .toList();

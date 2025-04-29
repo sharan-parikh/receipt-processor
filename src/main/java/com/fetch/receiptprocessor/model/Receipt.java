@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 
 @Document("receipts")
 @Data
-@NoArgsConstructor
 public class Receipt {
 
   @Id
@@ -33,4 +32,8 @@ public class Receipt {
   private List<ReceiptItem> receiptItems;
 
   private BigDecimal total;
+
+  public Receipt() {
+    this.id = UUID.randomUUID();
+  }
 }

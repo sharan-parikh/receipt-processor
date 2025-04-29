@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 @Document("receipt_items")
 @Data
-@NoArgsConstructor
 public class ReceiptItem {
 
   @Id
@@ -20,7 +19,12 @@ public class ReceiptItem {
 
   private BigDecimal price;
 
+  public ReceiptItem() {
+    this.id = UUID.randomUUID();
+  }
+
   public ReceiptItem(String shortDescription, BigDecimal price) {
+    this();
     this.shortDescription = shortDescription;
     this.price = price;
   }
