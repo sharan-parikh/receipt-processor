@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  receipt-processor-service:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/receipt-db
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      timeout: 30s
+      retries: 3

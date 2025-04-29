@@ -12,7 +12,7 @@
 	<artifactId>receipt-processor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>receipt-processor</name>
-	<description>Take Home Assessment - Backend Engineering Apprenticeship</description>
+	<description>Take Home Assessment For Fetch - Backend Engineering Apprenticeship</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -62,11 +62,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>de.flapdoodle.embed</groupId>
-			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>4.18.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>de.flapdoodle.embed</groupId>-->
+<!--			<artifactId>de.flapdoodle.embed.mongo</artifactId>-->
+<!--			<version>4.18.1</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
