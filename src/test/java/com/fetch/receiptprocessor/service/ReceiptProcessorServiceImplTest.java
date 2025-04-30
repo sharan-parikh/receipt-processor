@@ -1,11 +1,10 @@
-package com.fetch.receiptprocessor.unit.service;
+package com.fetch.receiptprocessor.service;
 
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;
 import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
-import com.fetch.receiptprocessor.service.ReceiptProcessorServiceImpl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +62,6 @@ class ReceiptProcessorServiceImplTest {
     testReceipt.setReceiptItemsIds(Arrays.asList(testItem1.getId(), testItem2.getId()));
   }
 
-  // getReceiptWithItems tests
   @Test
   void getReceiptWithItems_ValidId_ReturnsReceiptWithItems() throws Exception {
     when(receiptRepository.findById(testReceipt.getId()))
