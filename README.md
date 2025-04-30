@@ -14,6 +14,38 @@ A Java Spring Boot application developed as a solution to the [Fetch Rewards Rec
 
 ---
 
+## Design Decisions
+
+### Clean Architecture
+The application is structured following standard layering:
+- **Controller Layer**: Handles HTTP requests and delegates processing.
+- **Service Layer**: Contains business logic for receipt processing and points computation.
+- **Model/DTO Layer**: Separates domain and transport concerns using `@Document` and DTO objects.
+- **Repository Layer**: Data layer that persists the data.
+
+### Validation
+- Payload validation is handled using `@Valid` and standard JSR-380 annotations (`@NotNull`, `@Pattern`, etc.) in the DTOs.
+- Global exception handling is provided via `@ControllerAdvice` for maintainable error responses.
+
+### Maintainability
+- Follows **SOLID principles** and separation of concerns, making it easy to test and extend.
+- Adding new rules for point calculation can be done by introducing new methods in the service layer without affecting controllers.
+- `ReceiptItem` and `ReceiptDTO` are cleanly modeled, making serialization/deserialization robust.
+- Dockerized environment allows consistent setup across different systems.
+
+### Extensibility
+- Can easily be extended to persist data in a real database.
+- Future enhancements like authentication, rate limiting, or analytics can be plugged in with minimal changes due to layered design.
+
+### PointsService and Rule Calculators
+
+The core logic for calculating points is encapsulated in a modular and extensible service called 
+`PointsService`. This service delegates the calculation to a list of independently defined rules 
+located in the `com.fetch.receiptprocessor.calculators` package. Each rule implements a `PointCalculationRule` interface, 
+promoting **single responsibility** and **open/closed principles**.
+
+---
+
 ## Technologies Used
 
 - **Java 17**
@@ -41,10 +73,11 @@ git clone https://github.com/sharan-parikh/receipt-processor.git
 cd receipt-processor
 ```
 
-### Build the Application
+### Testing the Application
 
+If you want to run the tests, run the following command:
 ```bash
-./mvnw clean package
+./mvnw test
 ```
 
 ### Run with Docker Compose
@@ -158,33 +191,12 @@ docker-compose down
 
 ---
 
-## 📂 Project Structure
-
-```
-receipt-processor/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/receiptprocessor/
-│   │   │   ├── controller/
-│   │   │   ├── model/
-│   │   │   ├── service/
-│   │   │   └── ReceiptProcessorApplication.java
-│   └── test/
-│       └── java/com/example/receiptprocessor/
-├── Dockerfile
-├── docker-compose.yml
-├── pom.xml
-└── README.md
-```
-
----
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
 ---
 
-## 🙌 Acknowledgments
+## Acknowledgments
 
 - [Fetch Rewards Receipt Processor Challenge](https://github.com/fetch-rewards/receipt-processor-challenge)
