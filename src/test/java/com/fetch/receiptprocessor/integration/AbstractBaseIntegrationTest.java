@@ -13,15 +13,13 @@ public class AbstractBaseIntegrationTest {
 
   @Container
   static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest")
-          .withExposedPorts(27017)
-          .withCommand("--replSet", "rs0");
+          .withExposedPorts(27017);
 
   @DynamicPropertySource
   static void containersProperties(DynamicPropertyRegistry registry) {
     mongoDBContainer.start();
-//    registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
-//    registry.add("spring.data.mongodb.port", mongoDBContainer::getFirstMappedPort);
-    registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+    registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
+    registry.add("spring.data.mongodb.port", mongoDBContainer::getFirstMappedPort);
   }
 
 }

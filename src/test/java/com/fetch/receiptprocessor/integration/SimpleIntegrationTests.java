@@ -97,6 +97,7 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
 
   @Test
   public void whenProcessReceiptCalled_withInValidReceipt_ThenReceiptIsNotSaved() throws Exception {
+    mockReceiptDTO.setRetailer(null);
     mockMvc.perform(post("/receipts/process")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(mockReceiptDTO)))
