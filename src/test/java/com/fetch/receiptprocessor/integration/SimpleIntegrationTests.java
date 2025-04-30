@@ -10,9 +10,7 @@ import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import com.fetch.receiptprocessor.service.ReceiptProcessorService;
 
-import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-public class FullIntegrationTests extends AbstractBaseIntegrationTest {
+public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
 
   @Autowired
   MockMvc mockMvc;
