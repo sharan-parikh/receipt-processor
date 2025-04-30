@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableMongoRepositories(basePackages = "com.fetch.receiptprocessor.repository")
-@Profile("prod")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
   @Value("${spring.data.mongodb.uri}")
