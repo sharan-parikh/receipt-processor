@@ -5,3 +5,4 @@ spring:
     mongodb:
       uuid-representation: standard
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/receipt_db}
+      database: receipt_db

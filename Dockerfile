@@ -10,7 +10,7 @@ RUN ./mvnw dependency:go-offline
 
 # Build application
 COPY src src
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -Pprod
 
 # Test stage (optional)
 FROM builder as tester

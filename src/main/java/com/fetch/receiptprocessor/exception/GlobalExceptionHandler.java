@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<Map<String, String>> handleInvalidFormatExceptions(HttpMessageNotReadableException ex) {
     Map<String, String> errorResponse = new HashMap<>();
-    errorResponse.put("message", "unable to deserialize the payload.");
+    errorResponse.put("message", "the receipt is invalid, unable to deserialize the payload.");
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
