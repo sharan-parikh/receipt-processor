@@ -1,4 +1,4 @@
-package com.fetch.receiptprocessor.unit.dto;
+package com.fetch.receiptprocessor.dto;
 
 import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
 

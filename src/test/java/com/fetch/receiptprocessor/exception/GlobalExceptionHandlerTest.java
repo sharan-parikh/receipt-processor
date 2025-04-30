@@ -1,4 +1,4 @@
-package com.fetch.receiptprocessor.unit.exception;
+package com.fetch.receiptprocessor.exception;
 
 import com.fetch.receiptprocessor.exception.GlobalExceptionHandler;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;

@@ -9,24 +9,14 @@ services:
       mongodb:
         condition: service_healthy
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/receipt-db?replicaSet=rs0
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/receipt-db
 
   mongodb:
     image: mongo:latest
     ports:
       - "27017:27017"
-    command: ["--replSet", "rs0", "--bind_ip_all"]
     healthcheck:
-      test: |
-        echo 'try {
-          rs.status()
-        } catch (err) {
-          rs.initiate({
-            _id: "rs0",
-            members: [{ _id: 0, host: "mongodb:27017" }]
-          })
-        }' | mongosh --quiet
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       timeout: 30s
-      start_period: 5s
-      retries: 30
+      retries: 10

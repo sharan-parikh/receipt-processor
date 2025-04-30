@@ -9,7 +9,6 @@ import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
   }
 
   @Override
-  @Transactional
   public Receipt processReceipt(ReceiptDTO receiptRequest) {
     Receipt receipt = new Receipt();
     receipt.setRetailer(receiptRequest.getRetailer());

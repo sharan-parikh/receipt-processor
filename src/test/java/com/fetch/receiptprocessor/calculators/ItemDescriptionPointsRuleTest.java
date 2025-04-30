@@ -1,4 +1,4 @@
-package com.fetch.receiptprocessor.unit.service.calculators;
+package com.fetch.receiptprocessor.calculators;
 
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;

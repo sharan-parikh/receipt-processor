@@ -1,4 +1,4 @@
-package com.fetch.receiptprocessor.unit.dto;
+package com.fetch.receiptprocessor.dto;
 
 import com.fetch.receiptprocessor.dto.ReceiptDTO;
 import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
@@ -111,7 +111,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("purchase date is missing or is invalid.", v.getMessage());
+    assertEquals("purchase date is missing.", v.getMessage());
     assertEquals("purchaseDate", v.getPropertyPath().toString());
   }
 
@@ -129,7 +129,7 @@ class ReceiptDTOValidationTest {
 
     assertEquals(1, violations.size());
     ConstraintViolation<ReceiptDTO> v = violations.iterator().next();
-    assertEquals("purchase time is missing or is invalid.", v.getMessage());
+    assertEquals("purchase time is missing.", v.getMessage());
     assertEquals("purchaseTime", v.getPropertyPath().toString());
   }
 

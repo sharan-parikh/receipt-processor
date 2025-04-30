@@ -16,19 +16,19 @@ import lombok.Data;
 @Data
 public class ReceiptDTO {
 
-  @NotNull(message = "retailer is missing")
+  @NotNull(message = "retailer is missing.")
   @Pattern(regexp = "^[\\w\\s\\-&]+$", message = "The name of the retailer is invalid.")
   private String retailer;
 
-  @NotNull(message = "purchase date is missing")
+  @NotNull(message = "purchase date is missing.")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ApplicationConstants.DATE_FORMAT)
   private LocalDate purchaseDate;
 
-  @NotNull(message = "purchase time is missing")
+  @NotNull(message = "purchase time is missing.")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ApplicationConstants.TIME_FORMAT)
   private LocalTime purchaseTime;
 
-  @NotNull(message = "items is missing")
+  @NotNull(message = "items is missing.")
   @Size(min = 1, message = "minimum number of items in a receipt should be 1.")
   @Valid
   private List<ReceiptItemDTO> items;
