@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -21,8 +22,7 @@ class RetailerPointsRuleTest {
   void setUp() {
     rule = new RetailerPointsRule();
     receipt = new Receipt();
-    receipt.setPurchaseDate(LocalDate.now());
-    receipt.setPurchaseTime(LocalTime.now());
+    receipt.setPurchaseDateTime(LocalDateTime.now());
     receipt.setTotal(new BigDecimal("10.00"));
     receipt.setReceiptItemsIds(new ArrayList<>());
     receipt.setReceiptItems(new ArrayList<>());

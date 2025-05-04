@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -22,8 +23,7 @@ class QuarterMultipleRuleTest {
     rule = new QuarterMultipleRule();
     receipt = new Receipt();
     receipt.setRetailer("Test Store");
-    receipt.setPurchaseDate(LocalDate.now());
-    receipt.setPurchaseTime(LocalTime.now());
+    receipt.setPurchaseDateTime(LocalDateTime.now());
     receipt.setReceiptItems(new ArrayList<>());
   }
 

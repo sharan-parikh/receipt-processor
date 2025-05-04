@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -22,9 +23,7 @@ public class Receipt {
 
   private String retailer;
 
-  private LocalDate purchaseDate;
-
-  private LocalTime purchaseTime;
+  private LocalDateTime purchaseDateTime;
 
   private List<UUID> receiptItemsIds;
 

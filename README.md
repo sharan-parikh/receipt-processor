@@ -165,14 +165,6 @@ The project includes unit and integration tests.
 ./mvnw test
 ```
 
-### Run Tests with Docker Compose
-
-```bash
-docker-compose -f docker-compose.test.yml up --build
-```
-
----
-
 ##  Docker Configuration
 
 The `docker-compose.yml` file sets up the application and its dependencies.

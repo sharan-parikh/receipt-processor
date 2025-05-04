@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ class PurchaseDatePointsRuleTest {
     rule = new PurchaseDatePointsRule();
     receipt = new Receipt();
     receipt.setRetailer("Test Store");
-    receipt.setPurchaseTime(LocalTime.now());
+    receipt.setPurchaseDateTime(LocalDateTime.now());;
     receipt.setTotal(new BigDecimal("10.00"));
     receipt.setReceiptItemsIds(new ArrayList<>());
     receipt.setReceiptItems(new ArrayList<>());
@@ -30,28 +31,28 @@ class PurchaseDatePointsRuleTest {
 
   @Test
   void shouldReturn6PointsWhenPurchaseDateIsSunday() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 23));
+    receipt.setPurchaseDateTime(LocalDateTime.of(LocalDate.of(2023, 4, 23), LocalTime.now()));
     int points = rule.apply(receipt, false);
     assertEquals(6, points);
   }
 
   @Test
   void shouldReturn0PointsWhenPurchaseDateIsSaturday() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 22));
+    receipt.setPurchaseDateTime(LocalDateTime.of(LocalDate.of(2023, 4, 22), LocalTime.now()));
     int points = rule.apply(receipt, false);
     assertEquals(0, points);
   }
 
   @Test
   void shouldReturn0PointsWhenPurchaseDateIsEven() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 26));
+    receipt.setPurchaseDateTime(LocalDateTime.of(LocalDate.of(2023, 4, 26), LocalTime.now()));
     int points = rule.apply(receipt, false);
     assertEquals(0, points);
   }
 
   @Test
   void shouldReturn6PointsWhenPurchaseDateIsOdd() {
-    receipt.setPurchaseDate(LocalDate.of(2023, 4, 11));
+    receipt.setPurchaseDateTime(LocalDateTime.of(LocalDate.of(2023, 4, 11), LocalTime.now()));
     int points = rule.apply(receipt, false);
     assertEquals(6, points);
   }

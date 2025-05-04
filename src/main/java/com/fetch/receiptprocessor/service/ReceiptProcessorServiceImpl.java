@@ -11,6 +11,7 @@ import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +39,7 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
   public Receipt processReceipt(ReceiptDTO receiptRequest) {
     Receipt receipt = new Receipt();
     receipt.setRetailer(receiptRequest.getRetailer());
-    receipt.setPurchaseDate(receiptRequest.getPurchaseDate());
-    receipt.setPurchaseTime(receiptRequest.getPurchaseTime());
+    receipt.setPurchaseDateTime(LocalDateTime.of(receiptRequest.getPurchaseDate(), receiptRequest.getPurchaseTime()));
     receipt.setTotal(new BigDecimal(receiptRequest.getTotal()));
 
     List<ReceiptItem> itemsToAdd = new ArrayList<>();
