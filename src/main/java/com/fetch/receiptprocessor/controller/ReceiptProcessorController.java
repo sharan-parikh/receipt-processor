@@ -3,8 +3,10 @@ package com.fetch.receiptprocessor.controller;
 import com.fetch.receiptprocessor.dto.PointsAwardedResponse;
 import com.fetch.receiptprocessor.dto.ReceiptCreatedResponse;
 import com.fetch.receiptprocessor.dto.ReceiptDTO;
+import com.fetch.receiptprocessor.exception.ResourceAlreadyExistsException;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
+import com.fetch.receiptprocessor.model.ReceiptPoints;
 import com.fetch.receiptprocessor.service.PointsService;
 import com.fetch.receiptprocessor.service.ReceiptProcessorService;
 
@@ -18,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+
 
 @RestController
 @RequestMapping("/receipts")
@@ -43,10 +49,19 @@ public class ReceiptProcessorController {
 
   @GetMapping("/{id}/points")
   public ResponseEntity<PointsAwardedResponse> getPoints(
-          @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId) throws ResourceNotFoundException {
-    Receipt receipt = receiptProcessorService.getReceiptWithItems(receiptId);
+          @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId
+  ) throws ResourceNotFoundException, ResourceAlreadyExistsException {
+    Optional<ReceiptPoints> receiptPoints = receiptProcessorService.getPoints(UUID.fromString(receiptId));
     PointsAwardedResponse response = new PointsAwardedResponse();
-    response.setPoints(pointsService.calculatePoints(receipt, false));
+
+    if(receiptPoints.isEmpty()) {
+      Receipt receipt = receiptProcessorService.getReceiptWithItems(receiptId);
+      int points = pointsService.calculatePoints(receipt, false);
+      receiptProcessorService.savePoints(receipt.getId(), points);
+      response.setPoints(points);
+    } else {
+      response.setPoints(receiptPoints.get().getPoints());
+    }
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 }
