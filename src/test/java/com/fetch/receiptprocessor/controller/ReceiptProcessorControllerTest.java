@@ -1,10 +1,10 @@
 package com.fetch.receiptprocessor.controller;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fetch.receiptprocessor.dto.ReceiptDTO;
 import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
+import com.fetch.receiptprocessor.model.ReceiptPoints;
 import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import com.fetch.receiptprocessor.service.PointsService;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -53,12 +52,9 @@ public class ReceiptProcessorControllerTest {
   @MockBean
   private ReceiptItemRepository receiptItemRepository;
 
-  private final ObjectMapper mapper = new ObjectMapper()
-          .registerModule(new JavaTimeModule());
-
   @BeforeEach
   void setup() {
-    when(receiptProcessorService.processReceipt(any()))
+    when(receiptProcessorService.saveReceipt(any()))
             .thenAnswer(invocation -> {
               Receipt receipt = new Receipt();
               receipt.setId(UUID.randomUUID());
@@ -248,7 +244,6 @@ public class ReceiptProcessorControllerTest {
 
   @Test
   public void getPoints_forExistingReceipt_shouldReturnPoints() throws Exception {
-    // First process a receipt
     ReceiptDTO receipt = new ReceiptDTO();
     receipt.setRetailer("Target");
     receipt.setPurchaseDate(LocalDate.parse("2022-01-01"));
@@ -263,17 +258,20 @@ public class ReceiptProcessorControllerTest {
 
     String receiptId = JsonPath.read(response, "$.id");
 
+    ReceiptPoints mockPoints = new ReceiptPoints();
+    mockPoints.setPoints(10);
+    when(receiptProcessorService.getPoints(any(String.class))).thenReturn(mockPoints);
     // Then get points
     mockMvc.perform(get("/receipts/{id}/points", receiptId))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.points").exists())
-            .andExpect(jsonPath("$.points").isNumber());
+            .andExpect(jsonPath("$.points").value(10));
   }
 
   @Test
   public void getPoints_forNonExistentReceipt_shouldReturnNotFound() throws Exception {
     String nonExistentId = UUID.randomUUID().toString();
-    when(receiptProcessorService.getReceiptWithItems(nonExistentId)).thenThrow(new ResourceNotFoundException("Receipt not found"));
+    when(receiptProcessorService.getPoints(nonExistentId)).thenThrow(new ResourceNotFoundException("Receipt not found"));
 
     mockMvc.perform(get("/receipts/{id}/points", nonExistentId))
             .andExpect(status().isNotFound())

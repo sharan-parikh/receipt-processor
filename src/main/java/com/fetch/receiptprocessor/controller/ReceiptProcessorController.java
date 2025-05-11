@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
@@ -32,6 +29,7 @@ import jakarta.validation.constraints.NotBlank;
 @Validated
 public class ReceiptProcessorController {
   private final ReceiptProcessorService receiptProcessorService;
+
   private final PointsService pointsService;
 
   public ReceiptProcessorController(ReceiptProcessorService receiptProcessorService, PointsService pointsService)  {
@@ -40,28 +38,25 @@ public class ReceiptProcessorController {
   }
 
   @PostMapping("/process")
-  public ResponseEntity<ReceiptCreatedResponse> processReceipt(@RequestBody @Valid ReceiptDTO receiptDTO) {
-     Receipt savedReceipt = receiptProcessorService.processReceipt(receiptDTO);
-     ReceiptCreatedResponse response = new ReceiptCreatedResponse();
-     response.setId(savedReceipt.getId().toString());
-     return ResponseEntity.status(HttpStatus.OK).body(response);
+  public ResponseEntity<ReceiptCreatedResponse> processReceipt(
+          @RequestBody @Valid ReceiptDTO receiptDTO
+  ) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+    Receipt savedReceipt = receiptProcessorService.saveReceipt(receiptDTO);
+    receiptProcessorService.populateReceiptItems(savedReceipt);
+    receiptProcessorService.savePoints(savedReceipt.getId(), pointsService.calculatePoints(savedReceipt, false));
+
+    ReceiptCreatedResponse response = new ReceiptCreatedResponse();
+    response.setId(savedReceipt.getId().toString());
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @GetMapping("/{id}/points")
   public ResponseEntity<PointsAwardedResponse> getPoints(
           @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId
-  ) throws ResourceNotFoundException, ResourceAlreadyExistsException {
-    Optional<ReceiptPoints> receiptPoints = receiptProcessorService.getPoints(UUID.fromString(receiptId));
+  ) throws ResourceNotFoundException {
+    ReceiptPoints receiptPoints = receiptProcessorService.getPoints(receiptId);
     PointsAwardedResponse response = new PointsAwardedResponse();
-
-    if(receiptPoints.isEmpty()) {
-      Receipt receipt = receiptProcessorService.getReceiptWithItems(receiptId);
-      int points = pointsService.calculatePoints(receipt, false);
-      receiptProcessorService.savePoints(receipt.getId(), points);
-      response.setPoints(points);
-    } else {
-      response.setPoints(receiptPoints.get().getPoints());
-    }
+    response.setPoints(receiptPoints.getPoints());
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 }

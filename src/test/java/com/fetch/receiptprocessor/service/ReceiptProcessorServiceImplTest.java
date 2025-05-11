@@ -1,9 +1,12 @@
 package com.fetch.receiptprocessor.service;
 
+import com.fetch.receiptprocessor.exception.ResourceAlreadyExistsException;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;
+import com.fetch.receiptprocessor.model.ReceiptPoints;
 import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
+import com.fetch.receiptprocessor.repository.ReceiptPointsRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +42,9 @@ class ReceiptProcessorServiceImplTest {
 
   @Mock
   private ReceiptItemRepository receiptItemRepository;
+
+  @Mock
+  private ReceiptPointsRepository receiptPointsRepository;
 
   @InjectMocks
   private ReceiptProcessorServiceImpl receiptProcessorService;
@@ -129,5 +135,19 @@ class ReceiptProcessorServiceImplTest {
     receiptProcessorService.getReceiptWithItems(testReceipt.getId().toString());
 
     verify(receiptItemRepository, times(1)).findAllById(testReceipt.getReceiptItemsIds());
+  }
+
+  @Test
+  void savePoints_shouldThrowException_WhenPointsExists() {
+    when(receiptPointsRepository.findByReceiptId(any(UUID.class))).thenReturn(Optional.of(new ReceiptPoints()));
+    assertThrows(ResourceAlreadyExistsException.class, () -> receiptProcessorService.savePoints(UUID.randomUUID(), 10));
+  }
+
+  @Test
+  void savePoints_shouldNotThrowException_WhenPointsDoesNotExists() throws ResourceAlreadyExistsException {
+    when(receiptPointsRepository.findByReceiptId(any(UUID.class))).thenReturn(Optional.empty());
+    when(receiptPointsRepository.save(any(ReceiptPoints.class))).thenReturn(new ReceiptPoints());
+    receiptProcessorService.savePoints(UUID.randomUUID(), 10);
+    verify(receiptPointsRepository, times(1)).save(any(ReceiptPoints.class));
   }
 }

@@ -8,7 +8,6 @@ import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptItem;
 import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
 import com.fetch.receiptprocessor.repository.ReceiptRepository;
-import com.fetch.receiptprocessor.service.ReceiptProcessorService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,9 +35,6 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
 
   @Autowired
   MockMvc mockMvc;
-
-  @Autowired
-  private ReceiptProcessorService receiptProcessorService;
 
   @Autowired
   private ReceiptRepository receiptRepository;
