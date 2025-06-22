@@ -11,6 +11,39 @@ A Java Spring Boot application developed as a solution to the [Fetch Rewards Rec
 - **Points Retrieval**: Provides a GET endpoint to fetch the points awarded for a specific receipt.
 - **In-Memory Storage**: Utilizes an in-memory data store for simplicity and ease of testing.
 - **Containerized Deployment**: Includes Docker configurations for seamless deployment.
+- **API Documentation**: Interactive Swagger UI for API exploration (development only).
+
+---
+
+## Environment Profiles
+
+The application supports different environment profiles for configuration management:
+
+### Development Profile (`dev`)
+- **Swagger UI**: Enabled at `http://localhost:8080/swagger-ui.html`
+- **API Docs**: Available at `http://localhost:8080/api-docs`
+- **Full API Documentation**: Interactive documentation for testing and development
+
+### Production Profile (`prod`)
+- **Swagger UI**: Disabled for security
+- **API Docs**: Disabled for security
+- **Optimized**: No documentation endpoints exposed
+
+### Running with Profiles
+
+```bash
+# Development mode (default)
+./mvnw spring-boot:run
+
+# Development mode (explicit)
+./mvnw spring-boot:run -Dspring.profiles.active=dev
+
+# Production mode
+./mvnw spring-boot:run -Dspring.profiles.active=prod
+
+# Docker with specific profile
+docker-compose -f docker-compose.yml up --build -e SPRING_PROFILES_ACTIVE=prod
+```
 
 ---
 

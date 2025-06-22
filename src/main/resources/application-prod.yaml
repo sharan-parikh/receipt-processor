@@ -1,0 +1,6 @@
+# Production profile - Swagger UI and API docs disabled for security
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false 

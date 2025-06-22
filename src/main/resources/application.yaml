@@ -6,3 +6,15 @@ spring:
       uuid-representation: standard
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/receipt_db}
       database: receipt_db
+
+# Default springdoc configuration (will be overridden by profiles)
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+  packages-to-scan: com.fetch.receiptprocessor.controller
+  paths-to-match: /receipts/**

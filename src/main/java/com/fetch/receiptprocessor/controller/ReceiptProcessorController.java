@@ -22,11 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/receipts")
 @Validated
+@Tag(name = "Receipt Processing", description = "APIs for processing receipts and calculating points")
 public class ReceiptProcessorController {
   private final ReceiptProcessorService receiptProcessorService;
 
@@ -37,8 +43,19 @@ public class ReceiptProcessorController {
     this.pointsService = pointsService;
   }
 
+  @Operation(
+      summary = "Process a receipt",
+      description = "Processes a receipt and calculates points based on various rules"
+  )
+  @ApiResponse(
+      responseCode = "200", 
+      description = "Receipt processed successfully",
+      content = @Content(schema = @Schema(implementation = ReceiptCreatedResponse.class))
+  )
+  @ApiResponse(responseCode = "400", description = "Invalid receipt data")
   @PostMapping("/process")
   public ResponseEntity<ReceiptCreatedResponse> processReceipt(
+          @Parameter(description = "Receipt data to process") 
           @RequestBody @Valid ReceiptDTO receiptDTO
   ) throws ResourceAlreadyExistsException, ResourceNotFoundException {
     Receipt savedReceipt = receiptProcessorService.saveReceipt(receiptDTO);
@@ -50,6 +67,16 @@ public class ReceiptProcessorController {
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
+  @Operation(
+      summary = "Get points for a receipt",
+      description = "Retrieves the points awarded for a specific receipt"
+  )
+  @ApiResponse(
+      responseCode = "200", 
+      description = "Points retrieved successfully",
+      content = @Content(schema = @Schema(implementation = PointsAwardedResponse.class))
+  )
+  @ApiResponse(responseCode = "404", description = "Receipt not found")
   @GetMapping("/{id}/points")
   public ResponseEntity<PointsAwardedResponse> getPoints(
           @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId

@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Document("receipt_items")
 @Data

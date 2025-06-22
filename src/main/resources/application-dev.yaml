@@ -1,0 +1,13 @@
+# Development profile - Swagger UI and API docs enabled
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+  packages-to-scan: com.fetch.receiptprocessor.controller
+  paths-to-match: /receipts/** 
