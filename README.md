@@ -17,6 +17,8 @@ receipt-processor/
 └── compose.yaml      # Docker Compose configuration
 ```
 
+The backend contains the complete Spring Boot application with all its dependencies and can be built and run independently from the `/backend` directory.
+
 ---
 
 ## Features
