@@ -12,7 +12,7 @@
 	<artifactId>receipt-processor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>receipt-processor</name>
-	<description>Take Home Assessment For Fetch - Backend Engineering Apprenticeship</description>
+	<description>A receipt processing service</description>
 	<url/>
 	<licenses>
 		<license/>
