@@ -2,6 +2,23 @@
 
 A Java Spring Boot application developed as a solution to the [Fetch Rewards Receipt Processor Challenge](https://github.com/fetch-rewards/receipt-processor-challenge). This service processes digital receipts, calculates reward points based on specific criteria, and provides endpoints to retrieve the computed points.
 
+## Project Structure
+
+This project follows a monorepo structure:
+
+```
+receipt-processor/
+├── backend/          # Spring Boot application
+│   ├── src/         # Java source code
+│   ├── pom.xml      # Maven configuration
+│   ├── mvnw*        # Maven wrapper
+│   └── Dockerfile   # Backend containerization
+├── frontend/         # Placeholder for frontend application
+└── compose.yaml      # Docker Compose configuration
+```
+
+The backend contains the complete Spring Boot application with all its dependencies and can be built and run independently from the `/backend` directory.
+
 ---
 
 ## Features
@@ -33,16 +50,19 @@ The application supports different environment profiles for configuration manage
 
 ```bash
 # Development mode (default)
+cd backend
 ./mvnw spring-boot:run
 
 # Development mode (explicit)
+cd backend
 ./mvnw spring-boot:run -Dspring.profiles.active=dev
 
 # Production mode
+cd backend
 ./mvnw spring-boot:run -Dspring.profiles.active=prod
 
 # Docker with specific profile
-docker-compose -f docker-compose.yml up --build -e SPRING_PROFILES_ACTIVE=prod
+docker-compose up --build -e SPRING_PROFILES_ACTIVE=prod
 ```
 
 ---
@@ -110,6 +130,7 @@ cd receipt-processor
 
 If you want to run the tests, run the following command:
 ```bash
+cd backend
 ./mvnw test
 ```
 
