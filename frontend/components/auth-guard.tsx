@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useAuth } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useEffect } from "react"
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -10,7 +10,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    const currentPath = usePathname();
+    if (isLoaded && !isSignedIn && currentPath !== "/sign-in" && currentPath !== "/sign-up") {
       router.push("/sign-in")
     }
   }, [isLoaded, isSignedIn, router])
