@@ -5,8 +5,6 @@ import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
 import com.fetch.receiptprocessor.exception.ResourceNotFoundException;
 import com.fetch.receiptprocessor.model.Receipt;
 import com.fetch.receiptprocessor.model.ReceiptPoints;
-import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
-import com.fetch.receiptprocessor.repository.ReceiptRepository;
 import com.fetch.receiptprocessor.service.PointsService;
 import com.fetch.receiptprocessor.service.ReceiptProcessorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,9 +13,10 @@ import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -31,7 +30,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ReceiptProcessorController.class)
+
+@WebMvcTest(controllers = ReceiptProcessorController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class ReceiptProcessorControllerTest {
 
   @Autowired
@@ -40,17 +40,11 @@ public class ReceiptProcessorControllerTest {
   @Autowired
   private ObjectMapper objectMapper;
 
-  @MockBean
+  @MockitoBean
   private ReceiptProcessorService receiptProcessorService;
 
-  @MockBean
+  @MockitoBean
   private PointsService pointsService;
-
-  @MockBean
-  private ReceiptRepository receiptRepository;
-
-  @MockBean
-  private ReceiptItemRepository receiptItemRepository;
 
   @BeforeEach
   void setup() {
