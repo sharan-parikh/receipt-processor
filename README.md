@@ -10,12 +10,42 @@ This project follows a monorepo structure:
 receipt-processor/
 ├── backend/          # Spring Boot application
 │   ├── src/         # Java source code
+│   │   └── main/java/com/fetch/receiptprocessor/
+│   │       ├── common/          # Shared utilities, exceptions, and configurations
+│   │       │   ├── configuration/  # Common Spring configurations
+│   │       │   ├── exception/      # Global exception handling
+│   │       │   └── utils/          # Utility classes and constants
+│   │       ├── auth/            # Authentication and security module
+│   │       │   └── configuration/  # Security configurations
+│   │       ├── receipt/         # Receipt processing domain
+│   │       │   ├── controller/     # REST controllers
+│   │       │   ├── dto/           # Data transfer objects
+│   │       │   ├── model/         # Domain models
+│   │       │   ├── repository/    # Data access layer
+│   │       │   └── service/       # Business logic and calculators
+│   │       ├── user/            # User management domain (placeholder)
+│   │       │   ├── controller/     # User controllers
+│   │       │   ├── model/         # User models
+│   │       │   ├── repository/    # User repositories
+│   │       │   └── service/       # User services
+│   │       └── ReceiptProcessorApplication.java  # Main application class
 │   ├── pom.xml      # Maven configuration
 │   ├── mvnw*        # Maven wrapper
 │   └── Dockerfile   # Backend containerization
 ├── frontend/         # Placeholder for frontend application
 └── compose.yaml      # Docker Compose configuration
 ```
+
+### Modular Monolith Architecture
+
+The backend follows a **modular monolith** architecture with clear separation of concerns:
+
+- **common/**: Shared infrastructure components (exceptions, configurations, utilities)
+- **auth/**: Authentication and authorization logic
+- **receipt/**: Complete receipt processing domain with all its business logic
+- **user/**: User management domain (placeholder for future implementation)
+
+This structure enables easy extraction of individual modules into microservices in the future without major refactoring.
 
 The backend contains the complete Spring Boot application with all its dependencies and can be built and run independently from the `/backend` directory.
 
@@ -69,8 +99,21 @@ docker-compose up --build -e SPRING_PROFILES_ACTIVE=prod
 
 ## Design Decisions
 
+### Modular Monolith Architecture
+The application is structured as a **modular monolith** with clear domain boundaries:
+- **common/**: Shared infrastructure components including global exception handling, configurations, and utilities
+- **auth/**: Authentication and security concerns, prepared for future Clerk integration
+- **receipt/**: Complete receipt processing domain with its own controllers, services, repositories, and models
+- **user/**: User management domain (placeholder structure for future implementation)
+
+This architecture provides:
+- **Clear separation of concerns** at the domain level
+- **Easy migration path to microservices** when needed
+- **Reduced coupling** between business domains
+- **Independent testing** and development of each module
+
 ### Clean Architecture
-The application is structured following standard layering:
+Each module follows standard layering:
 - **Controller Layer**: Handles HTTP requests and delegates processing.
 - **Service Layer**: Contains business logic for receipt processing and points computation.
 - **Model/DTO Layer**: Separates domain and transport concerns using `@Document` and DTO objects.

@@ -1,0 +1,59 @@
+package com.receiptprocessor.backend.calculators;
+
+import com.receiptprocessor.backend.receipt.model.Receipt;
+import com.receiptprocessor.backend.receipt.service.calculators.LlmGeneratedPointsRule;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class LlmGeneratedPointsRuleTest {
+
+  private LlmGeneratedPointsRule rule;
+  private Receipt receipt;
+
+  @BeforeEach
+  void setUp() {
+    rule = new LlmGeneratedPointsRule();
+    receipt = new Receipt();
+    receipt.setRetailer("Test Store");
+    receipt.setPurchaseDateTime(LocalDateTime.now());
+    receipt.setReceiptItems(new ArrayList<>());
+  }
+
+  @Test
+  void shouldReturn5PointsWhenLlmGeneratedAndTotalGreaterThan10() {
+    receipt.setTotal(new BigDecimal("10.01"));
+    boolean llmGenerated = true;
+    int points = rule.apply(receipt, llmGenerated);
+    assertEquals(5, points);
+  }
+
+  @Test
+  void shouldReturn0PointsWhenNotLlmGeneratedAndTotalGreaterThan10() {
+    receipt.setTotal(new BigDecimal("10.01"));
+    boolean llmGenerated = false;
+    int points = rule.apply(receipt, llmGenerated);
+    assertEquals(0, points);
+  }
+
+  @Test
+  void shouldReturn0PointsWhenLlmGeneratedAndTotalExactly10() {
+    receipt.setTotal(new BigDecimal("10.00"));
+    boolean llmGenerated = true;
+    int points = rule.apply(receipt, llmGenerated);
+    assertEquals(0, points);
+  }
+
+  @Test
+  void shouldReturn0PointsWhenLlmGeneratedAndTotalLessThan10() {
+    receipt.setTotal(new BigDecimal("9.99"));
+    boolean llmGenerated = true;
+    int points = rule.apply(receipt, llmGenerated);
+    assertEquals(0, points);
+  }
+}
