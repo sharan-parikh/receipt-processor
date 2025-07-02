@@ -1,8 +1,8 @@
-package com.fetch.receiptprocessor.calculators;
+package com.fetch.receiptprocessor.receipt.service.calculators;
 
-import com.fetch.receiptprocessor.model.Receipt;
-import com.fetch.receiptprocessor.model.ReceiptItem;
-import com.fetch.receiptprocessor.service.calculators.ItemCountPointsRule;
+import com.fetch.receiptprocessor.receipt.model.Receipt;
+import com.fetch.receiptprocessor.receipt.model.ReceiptItem;
+import com.fetch.receiptprocessor.receipt.service.calculators.ItemCountPointsRule;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

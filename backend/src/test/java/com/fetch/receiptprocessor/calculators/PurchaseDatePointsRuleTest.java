@@ -1,7 +1,7 @@
-package com.fetch.receiptprocessor.calculators;
+package com.fetch.receiptprocessor.receipt.service.calculators;
 
-import com.fetch.receiptprocessor.model.Receipt;
-import com.fetch.receiptprocessor.service.calculators.PurchaseDatePointsRule;
+import com.fetch.receiptprocessor.receipt.model.Receipt;
+import com.fetch.receiptprocessor.receipt.service.calculators.PurchaseDatePointsRule;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

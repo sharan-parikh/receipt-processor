@@ -1,13 +1,13 @@
 package com.fetch.receiptprocessor.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fetch.receiptprocessor.dto.ReceiptCreatedResponse;
-import com.fetch.receiptprocessor.dto.ReceiptDTO;
-import com.fetch.receiptprocessor.dto.ReceiptItemDTO;
-import com.fetch.receiptprocessor.model.Receipt;
-import com.fetch.receiptprocessor.model.ReceiptItem;
-import com.fetch.receiptprocessor.repository.ReceiptItemRepository;
-import com.fetch.receiptprocessor.repository.ReceiptRepository;
+import com.fetch.receiptprocessor.receipt.dto.ReceiptCreatedResponse;
+import com.fetch.receiptprocessor.receipt.dto.ReceiptDTO;
+import com.fetch.receiptprocessor.receipt.dto.ReceiptItemDTO;
+import com.fetch.receiptprocessor.receipt.model.Receipt;
+import com.fetch.receiptprocessor.receipt.model.ReceiptItem;
+import com.fetch.receiptprocessor.receipt.repository.ReceiptItemRepository;
+import com.fetch.receiptprocessor.receipt.repository.ReceiptRepository;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
