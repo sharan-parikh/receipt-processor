@@ -16,5 +16,5 @@ public interface ReceiptProcessorService {
 
   ReceiptPoints savePoints(UUID receiptId, int points) throws ResourceAlreadyExistsException;
 
-  ReceiptPoints getPoints(String receiptId) throws ResourceNotFoundException;
+  ReceiptPoints getPoints(UUID receiptId) throws ResourceNotFoundException;
 }

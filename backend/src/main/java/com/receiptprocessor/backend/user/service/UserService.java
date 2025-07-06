@@ -1,5 +1,6 @@
 package com.receiptprocessor.backend.user.service;
 
+import com.receiptprocessor.backend.common.exception.ResourceNotFoundException;
 import com.receiptprocessor.backend.user.dto.UserDTO;
 import com.receiptprocessor.backend.user.model.User;
 
@@ -13,5 +14,5 @@ public interface UserService {
 
     User getUserById(UUID userId);
 
-    User createUser(UserDTO user);
+    User createUser(UserDTO user) throws ResourceNotFoundException;
 }

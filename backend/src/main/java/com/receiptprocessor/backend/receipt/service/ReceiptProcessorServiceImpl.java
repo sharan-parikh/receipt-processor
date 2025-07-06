@@ -77,20 +77,19 @@ public class ReceiptProcessorServiceImpl implements ReceiptProcessorService {
   }
 
   @Override
-  public ReceiptPoints getPoints(String receiptId) throws ResourceNotFoundException {
-    UUID receiptUuId = UUID.fromString(receiptId);
-    Optional<ReceiptPoints> receiptPoints = receiptPointsRepository.findByReceiptId(receiptUuId);
+  public ReceiptPoints getPoints(UUID receiptId) throws ResourceNotFoundException {
+    Optional<ReceiptPoints> receiptPoints = receiptPointsRepository.findByReceiptId(receiptId);
 
     if(receiptPoints.isPresent()) {
       return receiptPoints.get();
     }
 
-    Receipt receipt = receiptRepository.findById(receiptUuId).orElseThrow(
+    Receipt receipt = receiptRepository.findById(receiptId).orElseThrow(
             () -> new ResourceNotFoundException(ExceptionMessages.RECEIPT_NOT_FOUND)
     );
     int points = pointsService.calculatePoints(receipt, false);
     ReceiptPoints receiptPointsToSave = new ReceiptPoints();
-    receiptPointsToSave.setReceiptId(receiptUuId);
+    receiptPointsToSave.setReceiptId(receiptId);
     receiptPointsToSave.setPoints(points);
     return receiptPointsRepository.save(receiptPointsToSave);
   }
