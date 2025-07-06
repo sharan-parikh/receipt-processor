@@ -57,9 +57,8 @@ public class ReceiptProcessorController {
   public ResponseEntity<ReceiptCreatedResponse> processReceipt(
           @Parameter(description = "Receipt data to process") 
           @RequestBody @Valid ReceiptDTO receiptDTO
-  ) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+  ) throws ResourceAlreadyExistsException {
     Receipt savedReceipt = receiptProcessorService.saveReceipt(receiptDTO);
-    receiptProcessorService.populateReceiptItems(savedReceipt);
     receiptProcessorService.savePoints(savedReceipt.getId(), pointsService.calculatePoints(savedReceipt, false));
 
     ReceiptCreatedResponse response = new ReceiptCreatedResponse();

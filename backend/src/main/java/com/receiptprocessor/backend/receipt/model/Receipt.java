@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 
-@Document("receipts")
+@Document(collection = "receipts")
 @Data
 public class Receipt {
 
@@ -20,10 +20,9 @@ public class Receipt {
 
   private LocalDateTime purchaseDateTime;
 
-  private List<UUID> receiptItemsIds;
-
-  @Transient
   private List<ReceiptItem> receiptItems;
+
+  private UUID userId;
 
   private BigDecimal total;
 
