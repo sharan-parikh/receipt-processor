@@ -6,7 +6,6 @@ import com.receiptprocessor.backend.receipt.dto.ReceiptDTO;
 import com.receiptprocessor.backend.receipt.dto.ReceiptItemDTO;
 import com.receiptprocessor.backend.receipt.model.Receipt;
 import com.receiptprocessor.backend.receipt.model.ReceiptItem;
-import com.receiptprocessor.backend.receipt.repository.ReceiptItemRepository;
 import com.receiptprocessor.backend.receipt.repository.ReceiptRepository;
 
 import org.junit.jupiter.api.AfterEach;
@@ -42,9 +41,6 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
   private ReceiptRepository receiptRepository;
 
   @Autowired
-  private ReceiptItemRepository receiptItemRepository;
-
-  @Autowired
   private ObjectMapper objectMapper;
 
   private ReceiptDTO mockReceiptDTO;
@@ -66,7 +62,6 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
   @AfterEach
   public void tearDown() {
     receiptRepository.deleteAll();
-    receiptItemRepository.deleteAll();
   }
 
   @Test
@@ -84,9 +79,9 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
     assertEquals(new BigDecimal(mockReceiptDTO.getTotal()), savedReceipt.get().getTotal());
     assertEquals(mockReceiptDTO.getPurchaseDate(), mockReceiptDTO.getPurchaseDate());
     assertEquals(mockReceiptDTO.getPurchaseTime(), mockReceiptDTO.getPurchaseTime());
-    assertEquals(mockReceiptDTO.getItems().size(), savedReceipt.get().getReceiptItemsIds().size());
+    assertEquals(mockReceiptDTO.getItems().size(), savedReceipt.get().getReceiptItems().size());
 
-    List<ReceiptItem> savedReceiptItems = receiptItemRepository.findAllById(savedReceipt.get().getReceiptItemsIds());
+    List<ReceiptItem> savedReceiptItems = savedReceipt.get().getReceiptItems();
 
     assertEquals(savedReceiptItems.size(), mockReceiptDTO.getItems().size());
     assertEquals(savedReceiptItems.get(0).getShortDescription(), mockReceiptDTO.getItems().get(0).getShortDescription());
@@ -103,10 +98,8 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
             .andReturn();
 
     List<Receipt> savedReceipts = receiptRepository.findAll();
-    List<ReceiptItem> savedReceiptItems = receiptItemRepository.findAll();
 
     assertTrue(savedReceipts.isEmpty());
-    assertTrue(savedReceiptItems.isEmpty());
   }
 
   @Test
@@ -123,9 +116,7 @@ public class SimpleIntegrationTests extends AbstractBaseIntegrationTest {
             .andReturn();
 
     List<Receipt> savedReceipts = receiptRepository.findAll();
-    List<ReceiptItem> savedReceiptItems = receiptItemRepository.findAll();
 
     assertTrue(savedReceipts.isEmpty());
-    assertTrue(savedReceiptItems.isEmpty());
   }
 }

@@ -1,11 +1,16 @@
 spring:
   application:
-    name: receipt-processor
+    name: receipt-processor-backend
   data:
     mongodb:
-      uuid-representation: standard
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/receipt_db}
       database: receipt_db
+      uuid-representation: standard
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:https://composed-swan-44.clerk.accounts.dev}
 
 # Default springdoc configuration (will be overridden by profiles)
 springdoc:

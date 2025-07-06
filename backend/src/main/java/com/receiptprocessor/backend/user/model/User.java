@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -13,11 +14,13 @@ import java.util.UUID;
 @Document("users")
 @Data
 public class User {
+
     @Id
     private UUID id;
-    
-    // TODO: Add user fields
-    // Example: username, email, createdAt, preferences, etc.
+
+    private String email;
+
+    private LocalDateTime createdAt;
     
     public User() {
         this.id = UUID.randomUUID();

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/receipts")
@@ -57,9 +60,8 @@ public class ReceiptProcessorController {
   public ResponseEntity<ReceiptCreatedResponse> processReceipt(
           @Parameter(description = "Receipt data to process") 
           @RequestBody @Valid ReceiptDTO receiptDTO
-  ) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+  ) throws ResourceAlreadyExistsException {
     Receipt savedReceipt = receiptProcessorService.saveReceipt(receiptDTO);
-    receiptProcessorService.populateReceiptItems(savedReceipt);
     receiptProcessorService.savePoints(savedReceipt.getId(), pointsService.calculatePoints(savedReceipt, false));
 
     ReceiptCreatedResponse response = new ReceiptCreatedResponse();
@@ -79,7 +81,7 @@ public class ReceiptProcessorController {
   @ApiResponse(responseCode = "404", description = "Receipt not found")
   @GetMapping("/{id}/points")
   public ResponseEntity<PointsAwardedResponse> getPoints(
-          @PathVariable(name = "id") @NotBlank(message = "receipt id is invalid or missing") String receiptId
+          @PathVariable(name = "id") @NotNull(message = "receipt id is invalid or missing") UUID receiptId
   ) throws ResourceNotFoundException {
     ReceiptPoints receiptPoints = receiptProcessorService.getPoints(receiptId);
     PointsAwardedResponse response = new PointsAwardedResponse();

@@ -22,7 +22,6 @@ class RetailerPointsRuleTest {
     receipt = new Receipt();
     receipt.setPurchaseDateTime(LocalDateTime.now());
     receipt.setTotal(new BigDecimal("10.00"));
-    receipt.setReceiptItemsIds(new ArrayList<>());
     receipt.setReceiptItems(new ArrayList<>());
   }
 
