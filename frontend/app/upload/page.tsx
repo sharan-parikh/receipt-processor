@@ -340,7 +340,7 @@ export default function UploadPage() {
                 <div className="pt-4 border-t">
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-medium">Points to Earn:</span>
-                    <span className="text-xl font-bold text-blue-600">+{Math.floor(extractedData.total)} points</span>
+                    <span className="text-xl font-bold text-blue-600">+{Math.floor(apiResponse?.pointsEarned || 0)} points</span>
                   </div>
                   <button
                     onClick={submitReceipt}
