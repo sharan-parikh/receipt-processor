@@ -18,9 +18,6 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body className="antialiased">
-        {/* <SignedIn>
-          <UserButton />
-        </SignedIn> */}
         {children}
       </body>
     </html>
