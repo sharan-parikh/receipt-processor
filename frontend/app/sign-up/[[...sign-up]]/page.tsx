@@ -1,8 +1,9 @@
 import { SignUp } from '@clerk/nextjs'
+import { AuthLayout } from '@/components/auth-layout'
 
 export default function SignUpPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+        <AuthLayout>
             <SignUp
                 appearance={{
                     elements: {
@@ -12,6 +13,6 @@ export default function SignUpPage() {
                     }
                 }}
             />
-        </div>
+        </AuthLayout>
     )
-} 
+}
